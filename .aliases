@@ -68,8 +68,8 @@ alias chromekill="ps ux | grep '[C]hrome Helper --type=renderer' | grep -v exten
 alias certdate='f(){ openssl s_client -connect "$@" -showcerts </dev/null 2>/dev/null | openssl x509 -inform PEM -text -out certdata | grep  "Not After"; unset -f f; }; f'
 
 
-# Ripgrep doesn't search hidden files by default
-alias rg='rg --hidden'
+# Ripgrep doesn't search hidden files by default (but ignore git)
+alias rg='rg --hidden -g "!.git"'
 
 # https://twitter.com/natfriedman/status/1137094384170799104
 alias agame='c=12322123;x=20;y=20;while read -sn1 p;do k=${c:$(((p-1)*2)):2};let x+=$(($k/10-2));let y+=$(($k%10-2));echo -en \\033[$y\;"$x"HX;done'
@@ -96,3 +96,6 @@ alias rgedit='f(){ vim -p $(rg -l "$@"); unset -f f; }; f'
 
 # Replace docker-compose with docker cli
 alias docker-compose="docker compose"
+
+# Count Down script
+alias countdown=countdown.sh

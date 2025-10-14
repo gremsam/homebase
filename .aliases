@@ -99,3 +99,38 @@ alias docker-compose="docker compose"
 
 # Count Down script
 alias countdown=countdown.sh
+
+# Find a stash touching a specific file
+git_stashes_touching() {
+  local file="$1"
+  if [ -z "$file" ]; then
+    echo "Usage: git_stashes_touching path/to/file"
+    return 1
+  fi
+
+  for stash in $(git stash list | awk -F: '{print $1}'); do
+    if git stash show --name-only "$stash" | grep -Fxq "$file"; then
+      echo "$stash touches $file"
+    fi
+  done
+}
+
+# List the architecture of various pods:
+# note you can call this like:
+#  kubectl-get-pods-arch -n my-namespace
+# or
+#  kubectl-get-pods-arch -l app=frontend
+kubectl-get-pods-arch() {
+  {
+    echo '{"nodes":'
+    kubectl get nodes -o json
+    echo ',"pods":'
+    kubectl get pods ${@} -o json
+    echo '}'
+  } | jq -r '
+    (.nodes.items | map({(.metadata.name): .status.nodeInfo.architecture}) | add) as $node_arch |
+    ["NAME", "NODE", "ARCH"],
+    (.pods.items[] | [.metadata.name, .spec.nodeName, $node_arch[.spec.nodeName]]) |
+    @tsv
+  ' | column -t
+}

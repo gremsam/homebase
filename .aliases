@@ -134,3 +134,8 @@ kubectl-get-pods-arch() {
     @tsv
   ' | column -t
 }
+
+# Send git diff to gist
+gist-diff() {
+  git diff | jq -Rs '{"public":false,"files":{"example.diff":{"content":.}}}' | curl -H "Authorization: token $GITHUB_TOKEN" -X POST -d @- https://api.github.com/gists | jq -r '.html_url'
+}

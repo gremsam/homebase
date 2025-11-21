@@ -139,3 +139,8 @@ kubectl-get-pods-arch() {
 gist-diff() {
   git diff | jq -Rs '{"public":false,"files":{"example.diff":{"content":.}}}' | curl -H "Authorization: token $GITHUB_TOKEN" -X POST -d @- https://api.github.com/gists | jq -r '.html_url'
 }
+
+# curl debugging
+curl-debug() {
+      curl -w "lookup: %{time_namelookup}s\ntime_connect: %{time_connect}s\ntime_appconnect: %{time_appconnect}s\ntime_pretransfer: %{time_pretransfer}s\ntime_redirect: %{time_redirect}s\ntime_starttransfer: %{time_starttransfer}s\n\ntime_total: %{time_total}s\n" -I "$@"
+}

@@ -144,3 +144,26 @@ gist-diff() {
 curl-debug() {
       curl -w "lookup: %{time_namelookup}s\ntime_connect: %{time_connect}s\ntime_appconnect: %{time_appconnect}s\ntime_pretransfer: %{time_pretransfer}s\ntime_redirect: %{time_redirect}s\ntime_starttransfer: %{time_starttransfer}s\n\ntime_total: %{time_total}s\n" -I "$@"
 }
+
+# convert bytes to human readable text (from richbg)
+byteme() {
+    SLIST="bytes,KB,MB,GB,TB,PB,EB,ZB,YB"
+
+    POWER=1
+    # Use argument if provided, otherwise read from stdin
+    if [ -n "$1" ]; then
+        DATA="$1"
+    else
+        DATA=$(cat)
+    fi
+
+    VAL=$( echo "scale=2; $DATA / 1" | bc)
+    VINT=$( echo $VAL / 1024 | bc )
+    while [ ! $VINT = "0" ]
+    do
+        let POWER=POWER+1
+        VAL=$( echo "scale=2; $VAL / 1024" | bc)
+        VINT=$( echo $VAL / 1024 | bc )
+    done
+    echo $VAL$( echo $SLIST | cut -f$POWER -d, )
+}

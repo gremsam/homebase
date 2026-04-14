@@ -48,6 +48,7 @@
 
 ## Tooling & Workflow
 
+- Prefer a Makefile for common build/test/deploy tasks.  Commands for these should still work directly with build tools, but for consistency across repos the following commands should work: `make build` and `make test`.  Optionally also `make lint` and `make deploy` (where apprioriate)
 - **Task runner preference**. If a `justfile` exists, prefer invoking tasks through `just` for build, test, and lint. Do not add a `justfile` unless asked. If no `justfile` exists and there is a `Makefile` you can use that.
 - Default lint/test commands:
   - Rust: use `just` targets if present; otherwise run `cargo fmt`, `cargo clippy --all --benches --tests --examples --all-features`, then the targeted `cargo test` commands.

@@ -42,7 +42,7 @@
 - If code is very confusing or hard to understand:
   1. Try to simplify it.
   1. Add an ASCII art diagram in a code comment if it would help.
-- Major architectural decisions should be recorded in an ARCHITECTURE.md file
+- Major architectural decisions should be recorded in an ARCHITECTURE.md file. You should also reference this when making major changes and keep it up to date
 - Future work or unimplemented ideas should live in a TODO.md
 - Both of these shoudl be reviewed before starting new work
 

@@ -23,7 +23,7 @@
   jq '.items' /tmp/scratch_data.json
   jq '.total' /tmp/scratch_data.json
 
-  # Bad  
+  # Bad
   curl -s https://api.example.com/data | jq '.items'
   curl -s https://api.example.com/data | jq '.total'
 
@@ -45,6 +45,33 @@
 - Major architectural decisions should be recorded in an ARCHITECTURE.md file. You should also reference this when making major changes and keep it up to date
 - Future work or unimplemented ideas should live in a TODO.md
 - Both of these shoudl be reviewed before starting new work
+
+## Software Design principles
+- Prefer existing style of codebase
+- When writing new code try to keep the style and patterns consistent with existing patterns
+- Prefer New Jersey Style over MIT/Standford style (ie. complex interfaces with simple implementations over simple interfaces with complex implementations)
+ 1. MIT/Stanford style of design
+  a. Simplicity -- the design must be simple, both in implementation and interface. It is more important for the interface to be simple than the implementation.
+  a. Correctness -- the design must be correct in all observable aspects. Incorrectness is simply not allowed.
+  a. Consistency -- the design must not be inconsistent. A design is allowed to be slightly less simple and less complete to avoid inconsistency. Consistency is as important as correctness.
+  a. Completeness -- the design must cover as many important situations as is practical. All reasonably expected cases must be covered. Simplicity is not allowed to overly reduce completeness.
+ 1. New Jersey Style of design
+  a. Simplicity -- the design must be simple, both in implementation and interface. It is more important for the implementation to be simple than the interface. Simplicity is the most important consideration in a design.
+  a. Correctness -- the design must be correct in all observable aspects. It is slightly better to be simple than correct.
+  a. Consistency -- the design must not be overly inconsistent. Consistency can be sacrificed for simplicity in some cases, but it is better to drop those parts of the design that deal with less common circumstances than to introduce either implementational complexity or inconsistency.
+  a. Completeness -- the design must cover as many important situations as is practical. All reasonably expected cases should be covered. Completeness can be sacrificed in favor of any other quality. In fact, completeness must be sacrificed whenever implementation simplicity is jeopardized. Consistency can be sacrificed to achieve completeness if simplicity is retained; especially worthless is consistency of interface.
+- Prefer simple objects/structs mutated by controllers/services/daos
+- keep an ARCHITECTURE.md in the repo which describes the design of the project
+
+### Softare Style: Functional Core, Imperative Shell
+The following describes a style of software writing that I want to prefer as general guidance, but not to implement strictly
+This should be considered guidance not rules
+
+- Write business logic as pure functions — no I/O, no side effects, no mutation, no randomness. These functions take values and return values. They are trivially testable, infinitely composable, and completely honest about what they do. This is the functional core.
+- Push side effects — file I/O, network calls, database reads/writes, randomness, time, printing — to the outermost layer of the system. This thin shell orchestrates the core: it gathers inputs from the world, feeds them as plain values into pure functions, then takes the return values and acts on the world. This is the imperative shell.
+- The shell is hard to unit test and that's fine — keep it so thin it barely needs testing. The core is easy to test and that's where all the interesting logic lives, so test it exhaustively.
+- The idea: dependencies point inward. The core knows nothing about the shell. The shell knows about the core. I/O never bleeds into business logic.
+
 
 ## Tooling & Workflow
 

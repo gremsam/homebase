@@ -10,7 +10,7 @@
 #  eval $(minikube docker-env)
 #fi
 
-CURRENT_CONTEXT=$(kubectl config current-context)
+CURRENT_CONTEXT=$(kubectl config current-context 2>/dev/null) || return 0
 
 if (minikube status | grep apiserver | grep "Running"); then
   [ "${CURRENT_CONTEXT}" = "minikube" ] || kubectl config use-context minikube

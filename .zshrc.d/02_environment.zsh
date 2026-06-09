@@ -16,4 +16,4 @@ export HISTTIMEFORMAT="[%F %T] "
 setopt HIST_FIND_NO_DUPS
 
 # setup Github token
-export GITHUB_TOKEN=`cat ~/.config/gh/github.token`
+GITHUB_TOKEN=$(cat ~/.config/gh/github.token 2>/dev/null) && export GITHUB_TOKEN

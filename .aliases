@@ -140,6 +140,17 @@ gist-diff() {
   git diff | jq -Rs '{"public":false,"files":{"example.diff":{"content":.}}}' | curl -H "Authorization: token $GITHUB_TOKEN" -X POST -d @- https://api.github.com/gists | jq -r '.html_url'
 }
 
+# Pull it back out
+gist-apply() {
+    local gist_id="${1##*/}"
+    curl -s -H "Authorization: token $GITHUB_TOKEN" \
+      "https://api.github.com/gists/${gist_id}" \
+      | jq -r '.files["example.diff"].content' \
+      | git apply
+  }
+
+
+
 # curl debugging
 curl-debug() {
       curl -w "lookup: %{time_namelookup}s\ntime_connect: %{time_connect}s\ntime_appconnect: %{time_appconnect}s\ntime_pretransfer: %{time_pretransfer}s\ntime_redirect: %{time_redirect}s\ntime_starttransfer: %{time_starttransfer}s\n\ntime_total: %{time_total}s\n" -I "$@"

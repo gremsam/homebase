@@ -135,6 +135,12 @@ kubectl-get-pods-arch() {
   ' | column -t
 }
 
+# Find the scaling status for machine controller
+kubectl-machine-controller() {
+  kubectl get configmap cluster-autoscaler-status -n kube-system -o jsonpath='{.data.status}' | \
+  yq '.nodeGroups[] | (.name | split("/") | .[-1]) + ": ready=" + (.health.nodeCounts.registered.ready | tostring) + " target=" + (.health.cloudProviderTarget | tostring) + " down=" + (.scaleDown.candidates | tostring) + " up=" + .scaleUp.status'
+}
+
 # Send git diff to gist
 gist-diff() {
   git diff | jq -Rs '{"public":false,"files":{"example.diff":{"content":.}}}' | curl -H "Authorization: token $GITHUB_TOKEN" -X POST -d @- https://api.github.com/gists | jq -r '.html_url'
@@ -177,4 +183,13 @@ byteme() {
         VINT=$( echo $VAL / 1024 | bc )
     done
     echo $VAL$( echo $SLIST | cut -f$POWER -d, )
+}
+
+# quick finding logic
+found() {
+  if grep -q "$1"; then
+    echo "found"
+  else
+    echo "missing"
+  fi
 }
